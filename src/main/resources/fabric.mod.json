@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "woopie",
+  "version": "${version}",
+  "name": "Woopie Sword",
+  "description": "Standalone sword with the Woopie first-person animations.",
+  "environment": "*",
+  "entrypoints": { "main": ["com.woopie.WoopieMod"] },
+  "mixins": ["woopie.mixins.json"],
+  "depends": { "fabricloader": ">=0.19.0", "minecraft": "~26.3" }
+}

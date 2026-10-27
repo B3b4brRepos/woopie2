@@ -1,0 +1,37 @@
+{
+ "draw": {
+  "sounds": [
+   "woopie:draw"
+  ]
+ },
+ "melee_bayonet": {
+  "sounds": [
+   "woopie:melee_bayonet"
+  ]
+ },
+ "melee_push": {
+  "sounds": [
+   "woopie:melee_push"
+  ]
+ },
+ "inspect": {
+  "sounds": [
+   "woopie:inspect"
+  ]
+ },
+ "hit": {
+  "sounds": [
+   "woopie:hit"
+  ]
+ },
+ "head_hit": {
+  "sounds": [
+   "woopie:head_hit"
+  ]
+ },
+ "put_away": {
+  "sounds": [
+   "woopie:put_away"
+  ]
+ }
+}
