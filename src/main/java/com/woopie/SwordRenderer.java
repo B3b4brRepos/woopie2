@@ -122,7 +122,7 @@ public final class SwordRenderer {
         poseStack.pushPose();
         // Model pixel space -> view space: anchor idle_view at the eye, 1/16 block per pixel.
         poseStack.translate(OFF_X, OFF_Y, OFF_Z);
-        poseStack.mulPose(new org.joml.Quaternionf().rotationY((float) Math.toRadians(VIEW_YAW)).rotateX((float) Math.toRadians(VIEW_PITCH)).rotateZ((float) Math.toRadians(VIEW_ROLL)));
+        poseStack.mulPose(new org.joml.Matrix4f().rotationY((float) Math.toRadians(VIEW_YAW)).rotateX((float) Math.toRadians(VIEW_PITCH)).rotateZ((float) Math.toRadians(VIEW_ROLL)));
         // Bedrock +X is screen-left for this model (the left hand sits at +X), so mirror X.
         poseStack.scale((float) (-SCALE / 16.0), (float) (SCALE / 16.0), (float) (SCALE / 16.0));
         poseStack.translate(-VIEW_ANCHOR[0], -VIEW_ANCHOR[1], -VIEW_ANCHOR[2]);
