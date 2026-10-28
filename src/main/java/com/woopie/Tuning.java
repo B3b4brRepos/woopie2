@@ -25,37 +25,39 @@ final class Tuning {
             boolean fresh = true;
             if (Files.exists(p)) {
                 try (var in = Files.newBufferedReader(p)) { pr.load(in); }
-                fresh = !"7".equals(pr.getProperty("version"));
+                fresh = !"8".equals(pr.getProperty("version"));
             }
             if (fresh) {
                 pr.clear();
-                pr.setProperty("version", "7");
+                pr.setProperty("version", "8");
                 pr.setProperty("scale", "1.0");
-                pr.setProperty("off_x", "0.2");
-                pr.setProperty("off_y", "-0.1");
-                pr.setProperty("off_z", "-0.36");
-                pr.setProperty("view_yaw", "29");
-                pr.setProperty("view_pitch", "14");
+                pr.setProperty("off_x", "0.0");
+                pr.setProperty("off_y", "0.1");
+                pr.setProperty("off_z", "0.0");
+                pr.setProperty("view_yaw", "0");
+                pr.setProperty("view_pitch", "0");
                 pr.setProperty("view_roll", "0");
                 pr.setProperty("steve_arm", "false");
-                pr.setProperty("model_rot", "1,1,1");
+                pr.setProperty("anim_speed", "1.8");
+                pr.setProperty("model_rot", "-1,-1,1");
                 pr.setProperty("anim_rot", "-1,-1,1");
-                pr.setProperty("anim_pos", "1,1,-1");
+                pr.setProperty("anim_pos", "1,1,1");
                 try (var out = Files.newBufferedWriter(p)) {
                     pr.store(out, "Woopie tuning. off_z negative = farther away (smaller). Edits apply within 1 second.");
                 }
             }
             SwordRenderer.SCALE = Double.parseDouble(pr.getProperty("scale", "1.0").trim());
-            SwordRenderer.OFF_X = Double.parseDouble(pr.getProperty("off_x", "0.2").trim());
-            SwordRenderer.OFF_Y = Double.parseDouble(pr.getProperty("off_y", "-0.1").trim());
-            SwordRenderer.OFF_Z = Double.parseDouble(pr.getProperty("off_z", "-0.36").trim());
-            SwordRenderer.VIEW_YAW = Double.parseDouble(pr.getProperty("view_yaw", "29").trim());
-            SwordRenderer.VIEW_PITCH = Double.parseDouble(pr.getProperty("view_pitch", "14").trim());
+            SwordRenderer.OFF_X = Double.parseDouble(pr.getProperty("off_x", "0.0").trim());
+            SwordRenderer.OFF_Y = Double.parseDouble(pr.getProperty("off_y", "0.1").trim());
+            SwordRenderer.OFF_Z = Double.parseDouble(pr.getProperty("off_z", "0.0").trim());
+            SwordRenderer.VIEW_YAW = Double.parseDouble(pr.getProperty("view_yaw", "0").trim());
+            SwordRenderer.VIEW_PITCH = Double.parseDouble(pr.getProperty("view_pitch", "0").trim());
             SwordRenderer.VIEW_ROLL = Double.parseDouble(pr.getProperty("view_roll", "0").trim());
             SwordRenderer.STEVE_ARM = Boolean.parseBoolean(pr.getProperty("steve_arm", "false").trim());
-            signs(pr, "model_rot", "1,1,1", SwordRenderer.MODEL_ROT_SIGN);
+            SwordRenderer.ANIM_SPEED = Double.parseDouble(pr.getProperty("anim_speed", "1.8").trim());
+            signs(pr, "model_rot", "-1,-1,1", SwordRenderer.MODEL_ROT_SIGN);
             signs(pr, "anim_rot", "-1,-1,1", SwordRenderer.ANIM_ROT_SIGN);
-            signs(pr, "anim_pos", "1,1,-1", SwordRenderer.ANIM_POS_SIGN);
+            signs(pr, "anim_pos", "1,1,1", SwordRenderer.ANIM_POS_SIGN);
         } catch (Exception ignored) {
         }
     }

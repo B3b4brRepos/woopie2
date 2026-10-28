@@ -22,17 +22,20 @@ import net.minecraft.world.entity.player.PlayerSkin;
 /** Draws the Woopie sword model in first person and drives its animations. */
 public final class SwordRenderer {
     // Sign conventions found by checking that the hand cube stays on the sword grip across the animations.
-    static final double[] MODEL_ROT_SIGN = {1, 1, 1};
+    static final double[] MODEL_ROT_SIGN = {-1, -1, 1};
     static final double[] ANIM_ROT_SIGN = {-1, -1, 1};
-    static final double[] ANIM_POS_SIGN = {1, 1, -1};
+    static final double[] ANIM_POS_SIGN = {1, 1, 1};
 
     // Tunables: view anchor (the idle_view bone), overall scale and extra offset in blocks.
-    static final double[] VIEW_ANCHOR = {5.0, 9.1563, 13.05};
+    static final double[] VIEW_ANCHOR = {7.0, 9.1563, 13.05};
     static double SCALE = 1.0;
     static double OFF_X = 0.0, OFF_Y = 0.0, OFF_Z = 0.0;
     // Whole-model view rotation in degrees (yaw = swing blade left/right, pitch = tilt up/down, roll = twist) and arm skin choice.
     static double VIEW_YAW = 0.0, VIEW_PITCH = 0.0, VIEW_ROLL = 0.0;
-    static boolean STEVE_ARM = true;
+    static boolean STEVE_ARM = false;
+    static double ANIM_SPEED = 1.8;
+    static boolean wasAttackKey;
+    static long lastAttackNanos;
 
     static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("woopie", "textures/gun/uv/woopie.png");
     static final int FULL_BRIGHT = 15728880;
@@ -95,7 +98,13 @@ public final class SwordRenderer {
         wasHolding = true;
         boolean swinging = swing > 0.0F;
         boolean use = mc.options.keyUse.isDown();
-        if (swinging && !wasSwinging) {
+        boolean attackKey = mc.options.keyAttack.isDown();
+        long nowN = System.nanoTime();
+        // Every click restarts the swing (no waiting for the previous animation or vanilla's swing to finish).
+        boolean attackTrigger = (attackKey && !wasAttackKey) || (swinging && !wasSwinging);
+        wasAttackKey = attackKey;
+        if (attackTrigger && nowN - lastAttackNanos > 120_000_000L) {
+            lastAttackNanos = nowN;
             if (sneaking) play("inspect_empty", "inspect");
             else { comboIndex = comboIndex % 4 + 1; play("melee_bayonet_" + comboIndex, "melee_bayonet"); }
         } else if (use && !wasUse) {
@@ -105,14 +114,14 @@ public final class SwordRenderer {
         wasUse = use;
 
         Anim cur = anims.get(current);
-        double t = (System.nanoTime() - startNanos) / 1.0e9;
-        if (cur == null || (!cur.loop && t > cur.length)) {
+        double speed = current != null && current.startsWith("melee") ? ANIM_SPEED : 1.0;
+        double t = (System.nanoTime() - startNanos) / 1.0e9 * speed;
+        // Only static_idle (no length) loops. The pack flags melee animations as loop=true, which made swings repeat forever.
+        if (cur == null || (cur.length > 0 && t > cur.length)) {
             current = "static_idle";
             cur = anims.get("static_idle");
             t = 0;
-        }
-        if (cur.loop && cur.length > 0) t %= cur.length;
-        else if (cur.length == 0) t = 0;
+        } else if (cur.length == 0) t = 0;
 
         // Pose every bone (parents first).
         Map<Geo.Bone, M4> world = new HashMap<>();
